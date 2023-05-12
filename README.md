@@ -13,8 +13,26 @@ For the test I created a project containing Laravel 10.
 
 I have used Laravel Sail to set up an environment via docker. It will run PHP 8.2 and MySQL 8.0.
 
+### Set Environment
+
 The configuration I have applied, is defined in the `./.env.example` file.
-If you want you can rename it to `.env` and use it or you can adapt it according to your needs. The chosen ports, has been because I currently have other applications in my local, and I had to avoid duplicity for its correct operation.
+If you want you can rename it to `.env` and use it or you can adapt it according to your needs.
+
+```bash
+cp .env.example .env
+```
+
+The chosen ports, has been because I currently have other applications in my local, and I had to avoid duplicity for its correct operation.
+
+Note: Don't forget to set your db settings
+
+### Set the application key
+
+```bash
+php artisan key:generate
+```
+
+### Start Docker containers
 
 To get the container up we can launch the following command:
 
@@ -23,6 +41,18 @@ To get the container up we can launch the following command:
 ```
 
 Public url: <http://localhost:86/>
+
+### Stop Docker containers
+
+```bash
+./vendor/bin/sail stop
+```
+
+### Running Tests
+
+```bash
+./vendor/bin/sail test
+```
 
 ## About Laravel
 
