@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('client_id')->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->float('score', 8, 2);
             $table->timestamps();
         });
     }

@@ -10,9 +10,17 @@ class Lead extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
+        'client_id',
+        'score',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    public function client()
+    {
+        return $this->belongsTo(\App\Models\Client::class);
+    }
 }
