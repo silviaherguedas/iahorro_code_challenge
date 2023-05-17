@@ -6,10 +6,42 @@ use App\Models\Client;
 
 class ClientRepository
 {
-    protected $client;
+    public function __construct(protected Client $client) {}
 
-    public function __construct(Client $client)
+    /**
+     * Save resource
+     */
+    public function create(array $data)
     {
-        $this->client = $client;
+        $client = $this->fill($data);
+
+        $client->save();
+
+        return $client->fresh();
+    }
+
+    /**
+     * Update resource
+     */
+    public function update(array $data, int $id)
+    {
+        $client = $this->fill($data, $id);
+
+        $client->update();
+
+        return $client;
+    }
+
+    private function fill(array $data, int $id = null): Client
+    {
+        $client = (is_null($id)) ?
+            new $this->client :
+            $this->client->find($id);
+
+        $client->name = $data['name'];
+        $client->email = $data['email'];
+        $client->phone = $data['phone'];
+
+        return $client;
     }
 }
