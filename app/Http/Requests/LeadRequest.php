@@ -2,17 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Http\Request;
-
-class ClientRequest extends BaseFormRequest
+class LeadRequest extends BaseFormRequest
 {
-    protected $client_id;
-
-    public function __construct(Request $request)
-    {
-        $this->client_id = (int) optional($request->route("lead"))->client_id ?? 0;
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -29,9 +20,7 @@ class ClientRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:clients,email,'.$this->client_id,
-            'phone' => 'nullable|string|max:20',
+            'score' => 'required|numeric|between:0.00,99.99|regex:/^\d+(\.\d{1,2})?$/'
         ];
     }
 }
