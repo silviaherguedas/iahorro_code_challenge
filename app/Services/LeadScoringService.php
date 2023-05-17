@@ -2,36 +2,33 @@
 
 namespace App\Services;
 
-use App\Repositories\LeadRepository;
+use App\Models\Client;
 
 /**
- * Service dedicated to calculating the score value for a given Lead.
+ * Service dedicated to the calculation of the score that will be assigned to a potential client,
+ * applying the "Lead Scoring" methodology.
  *
- * In this case and because we do not have the necessary business logic to be able to
- * perform a proper calculation, the tool will automatically generate a random number,
- * whose value is applied numerically between 0 (the lowest) and 100 (the highest score).
- * The higher the score, the more interesting the customer or lead is, as it means that
- * he or she is more likely to make a purchase.
+ * Since we do not have the necessary business logic to be able to perform a proper calculation,
+ * the tool will automatically generate a random number.
+ * Whose value will be a number between 0 (the lowest) and 49.99, when the client does not provide
+ * us with a telephone number; and between 50 and 99.99 (the highest score) when he does.
+ *
+ * The higher the score, the more interesting the customer is, as it means they are more likely
+ * to make a purchase.
  */
 class LeadScoringService
 {
-    const MIN = 0;
-    const MAX = 100;
     const ROUND = 2;
 
     /**
-     * @var LeadRepository
+     * It generates a score between 0 and 100, depending on whether or not we have a contact telephone number.
      */
-    protected $leadRepository;
-
-    public function __construct(LeadRepository $leadRepository)
+    public function getLeadScore(Client $client)
     {
-        $this->leadRepository = $leadRepository;
-    }
+        $min = ($client->phone === null) ? 0 : 50;
+        $max = ($client->phone === null) ? 49.99 : 99.99;
 
-    public function getLeadScore()
-    {
-        return $this->float_rand(self::MIN, self::MAX, self::ROUND);
+        return $this->float_rand($min, $max, self::ROUND);
     }
 
     /**
