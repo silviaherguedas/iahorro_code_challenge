@@ -2,33 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientRequest;
+use App\Http\Requests\LeadPutRequest;
 use App\Models\Lead;
 use App\Services\ClientService;
 use App\Services\LeadService;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 
 class LeadController extends Controller
 {
     /**
-     * @var ClientService
+     * @var array
      */
-    private $clientService;
-
-    /**
-     * @var LeadService
-     */
-    private $leadService;
-
     private $errorNotFound = ['status' => 404, 'error' => 'Resource not found.'];
 
-    public function __construct(LeadService $leadService, ClientService $clientService)
-    {
-        $this->clientService = $clientService;
-        $this->leadService = $leadService;
-    }
+    public function __construct(
+        protected LeadService $leadService,
+        protected ClientService $clientService
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -40,7 +32,7 @@ class LeadController extends Controller
         try {
             $result['data'] = $this->leadService->getAll();
         } catch (Exception $e) {
-            $result = $this->response_status500($e->getMessage());
+            $result = $this->response_status422($e->getMessage());
         }
 
         return response()->json($result, $result['status']);
@@ -57,17 +49,20 @@ class LeadController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) : JsonResponse
+    public function store(ClientRequest $request) : JsonResponse
     {
-        // return response()->json([
-        //     'data' => Lead::create($request->all())
-        // ], 201);
+        $result = ['status' => 201];
 
+        try {
+            $client = $this->clientService->create($request->validated());
+            $lead = $this->leadService->create($client);
 
-        $client = $this->clientService->create($request->all());
-        $order = $this->leadService->create($client['id'], $request->all());
+            $result['data'] = ['client' => $client, 'lead' => $lead];
+        } catch (Exception $e) {
+            $result = $this->response_status422($e->getMessage());
+        }
 
-        return response()->json(['status' => 201, 'message' => 'Object created.'], 201);
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -80,7 +75,7 @@ class LeadController extends Controller
         try {
             $result['data'] = $this->leadService->getById($lead);
         } catch (Exception $e) {
-            $result = $this->response_status500($e->getMessage());
+            $result = $this->response_status422($e->getMessage());
         }
 
         return response()->json($result, $result['status']);
@@ -97,15 +92,22 @@ class LeadController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Lead $lead)
+    public function update(LeadPutRequest $request, Lead $lead): JsonResponse
     {
-        // return response()->json([
-        //     'data' => tap($lead)->update($request->all())
-        // ]);
+        $result = ['status' => 200];
+        $validated_client = $request->safe()->only(['name', 'email', 'phone']);
+        $validated_lead = array_merge($request->safe()->only(['score']), ['client_id' => $lead->client_id]);
 
-        $order = $this->leadService->update($request->all(), $lead);
+        try {
+            $client = $this->clientService->update($validated_client, $lead->client_id);
+            $lead = $this->leadService->update($validated_lead, $lead->id);
 
-        return response()->json($order, 200);
+            $result['data'] = ['client' => $client, 'lead' => $lead];
+        } catch (Exception $e) {
+            $result = $this->response_status422($e->getMessage());
+        }
+
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -113,19 +115,18 @@ class LeadController extends Controller
      */
     public function destroy(Lead $lead)
     {
-        // $lead->delete();
-        // return response([], 204);
+        $result = ['status' => 204];
 
-
-        $this->leadService->delete($lead);
-        return response()->json(['status' => 204, 'message' => 'Object delete.'], 204);
+        try {
+            $result['data'] = $this->leadService->delete($lead);
+        } catch (Exception $e) {
+            $result = $this->response_status422($e->getMessage());
+        }
+        return response()->json($result, $result['status']);
     }
 
-    private function response_status500(string $message)
+    private function response_status422(string $message): array
     {
-        return [
-            'status' => 500,
-            'error' => $message
-        ];
+        return ['status' => 422, 'error' => $message];
     }
 }
