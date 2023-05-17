@@ -22,7 +22,13 @@ class LeadFactory extends Factory
     {
         return [
             'client_id' => Client::factory(),
-            'score' => $this->faker->randomFloat(2, 0, 100),
+            'score' => function (array $attributes) {
+                $phone = Client::find($attributes['client_id'])->phone;
+                $min = ($phone === null) ? 0 : 50;
+                $max = ($phone === null) ? 49.99 : 99.99;
+
+                return $this->faker->randomFloat(2, $min, $max);
+            },
         ];
     }
 }
