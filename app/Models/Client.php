@@ -32,7 +32,7 @@ class Client extends Model
         'deleted_at',
     ];
 
-    public function leads()
+    public function lead()
     {
         return $this->hasOne(\App\Models\Lead::class);
     }
