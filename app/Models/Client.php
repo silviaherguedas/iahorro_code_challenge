@@ -5,10 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Propaganistas\LaravelPhone\Casts\E164PhoneNumberCast;
 
 class Client extends Model
 {
     use HasFactory, SoftDeletes;
+
+    public $casts = [
+        'phone' => E164PhoneNumberCast::class.':ES',
+    ];
 
     /**
      * The attributes that are mass assignable.

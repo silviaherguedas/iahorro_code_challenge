@@ -31,7 +31,7 @@ class ClientRequest extends BaseFormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:clients,email,'.$this->client_id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:20|phone:ES',
         ];
     }
 
