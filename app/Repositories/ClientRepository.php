@@ -3,45 +3,75 @@
 namespace App\Repositories;
 
 use App\Models\Client;
+use Illuminate\Database\Eloquent\Collection;
 
-class ClientRepository
+class ClientRepository implements RepositoryInterface
 {
-    public function __construct(protected Client $client) {}
+    public function __construct(protected Client $model) {}
 
     /**
-     * Save resource
+     * Get all resources.
      */
-    public function create(array $data)
+    public function getAll(): Collection
     {
-        $client = $this->fill($data);
+        return $this->model
+            ->with('lead')
+            ->get();
+    }
 
-        $client->save();
+    /**
+     * Get resource by Id
+     */
+    public function getById(int $id): Client
+    {
+        return $this->model
+            ->with('lead')
+            ->find($id);
+    }
+    /**
+     * Create resource
+     */
+    public function create(array $data): Client
+    {
+        $model = $this->fill($data);
 
-        return $client->fresh();
+        $model->save();
+
+        return $model->fresh();
     }
 
     /**
      * Update resource
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $id): Client
     {
-        $client = $this->fill($data, $id);
+        $model = $this->fill($data, $id);
 
-        $client->update();
+        $model->update();
 
-        return $client;
+        return $model;
+    }
+    /**
+     * Delete resource
+     */
+    public function deleteById(int $id): Client
+    {
+        $model = $this->model->find($id);
+        $model->delete();
+
+        return $model;
     }
 
     private function fill(array $data, int $id = null): Client
     {
-        $client = (is_null($id)) ?
-            new $this->client :
-            $this->client->find($id);
+        $model = (is_null($id)) ?
+            new $this->model :
+            $this->model->find($id);
 
-        $client->name = $data['name'];
-        $client->email = $data['email'];
-        $client->phone = $data['phone'];
+        $model->name = $data['name'];
+        $model->email = $data['email'];
+        $model->phone = $data['phone'];
 
-        return $client;
+        return $model;
     }
 }

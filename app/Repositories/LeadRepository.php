@@ -57,7 +57,7 @@ class LeadRepository implements RepositoryInterface
     /**
      * Delete resource
      */
-    public function deleteById(int $id): bool
+    public function deleteById(int $id): Lead
     {
         $model = $this->model->find($id);
         $model->delete();
