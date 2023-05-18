@@ -5,17 +5,17 @@ namespace App\Repositories;
 use App\Models\Lead;
 use Illuminate\Database\Eloquent\Collection;
 
-class LeadRepository
+class LeadRepository implements RepositoryInterface
 {
 
-    public function __construct(protected Lead $lead) {}
+    public function __construct(protected Lead $model) {}
 
     /**
      * Get all resources.
      */
     public function getAll(): Collection
     {
-        return $this->lead
+        return $this->model
             ->with('client')
             ->get();
     }
@@ -25,55 +25,55 @@ class LeadRepository
      */
     public function getById(int $id): Lead
     {
-        return $this->lead
+        return $this->model
             ->with('client')
             ->find($id);
     }
 
     /**
-     * Save resource
+     * Create resource
      */
-    public function create(array $data)
+    public function create(array $data): Lead
     {
-        $lead = $this->fill($data);
+        $model = $this->fill($data);
 
-        $lead->save();
+        $model->save();
 
-        return $lead->fresh();
+        return $model->fresh();
     }
 
     /**
      * Update resource
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $id): Lead
     {
-        $lead = $this->fill($data, $id);
+        $model = $this->fill($data, $id);
 
-        $lead->update();
+        $model->update();
 
-        return $lead;
+        return $model;
     }
 
     /**
      * Delete resource
      */
-    public function deleteById(int $id)
+    public function deleteById(int $id): bool
     {
-        $lead = $this->lead->find($id);
-        $lead->delete();
+        $model = $this->model->find($id);
+        $model->delete();
 
-        return $lead;
+        return $model;
     }
 
     private function fill(array $data, int $id = null): Lead
     {
-        $lead = (is_null($id)) ?
-            new $this->lead :
-            $this->lead->find($id);
+        $model = (is_null($id)) ?
+            new $this->model :
+            $this->model->find($id);
 
-        $lead->client_id = $data['client_id'];
-        $lead->score = $data['score'];
+        $model->client_id = $data['client_id'];
+        $model->score = $data['score'];
 
-        return $lead;
+        return $model;
     }
 }
