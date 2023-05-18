@@ -26,4 +26,12 @@ class LeadPutRequest extends BaseFormRequest
     {
         return array_merge($this->clientRequest->rules(), $this->leadRequest->rules());
     }
+
+    /**
+     * Get the filters that apply to the request data.
+     */
+    public function filters(): array
+    {
+        return array_merge($this->clientRequest->filters(), $this->leadRequest->filters());
+    }
 }

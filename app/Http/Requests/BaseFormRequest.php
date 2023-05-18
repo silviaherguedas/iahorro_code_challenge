@@ -5,9 +5,12 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Elegant\Sanitizer\Laravel\SanitizesInput;
 
 abstract class BaseFormRequest extends FormRequest
 {
+    use SanitizesInput;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -22,6 +25,10 @@ abstract class BaseFormRequest extends FormRequest
      */
     abstract public function rules();
 
+    /**
+     * Get the filters that apply to the request data.
+     */
+    abstract public function filters();
 
     protected function failedValidation(Validator $validator)
     {

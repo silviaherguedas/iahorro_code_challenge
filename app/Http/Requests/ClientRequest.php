@@ -34,4 +34,16 @@ class ClientRequest extends BaseFormRequest
             'phone' => 'nullable|string|max:20',
         ];
     }
+
+    /**
+     * Get the filters that apply to the request data.
+     */
+    public function filters(): array
+    {
+        return [
+            'name' => 'trim|escape|capitalize',
+            'email' => 'trim|escape|lowercase',
+            'phone' => 'trim|empty_string_to_null|escape',
+        ];
+    }
 }

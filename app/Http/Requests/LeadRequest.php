@@ -23,4 +23,14 @@ class LeadRequest extends BaseFormRequest
             'score' => 'required|numeric|between:0.00,99.99|regex:/^\d+(\.\d{1,2})?$/'
         ];
     }
+
+    /**
+     * Get the filters that apply to the request data.
+     */
+    public function filters(): array
+    {
+        return [
+            'score' => 'escape',
+        ];
+    }
 }
