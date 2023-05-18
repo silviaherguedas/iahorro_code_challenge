@@ -59,7 +59,7 @@ class LeadController extends Controller
             $client = $this->clientService->create($request->validated());
             $lead = $this->leadService->create($client);
 
-            $result['data'] = ['client' => $client, 'lead' => $lead];
+            $result['data'] = array_merge($lead->toArray(), ['client' => $client]);
         } catch (Exception $e) {
             $result = $this->errorResponse($e->getMessage());
         }
@@ -104,7 +104,7 @@ class LeadController extends Controller
             $client = $this->clientService->update($validated_client, $lead->client_id);
             $lead = $this->leadService->update($validated_lead, $lead->id);
 
-            $result['data'] = ['client' => $client, 'lead' => $lead];
+            $result['data'] = array_merge($lead->toArray(), ['client' => $client]);
         } catch (Exception $e) {
             $result = $this->errorResponse($e->getMessage());
         }
