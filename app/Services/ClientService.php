@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Client;
-use App\Repositories\EloquentClientRepository;
+use App\Repositories\RepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +11,7 @@ use InvalidArgumentException;
 
 class ClientService
 {
-    public function __construct(protected EloquentClientRepository $clientRepository) {}
+    public function __construct(protected RepositoryInterface $clientRepository) {}
 
     /**
      * Validate data.

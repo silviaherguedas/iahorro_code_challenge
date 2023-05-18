@@ -115,7 +115,7 @@ class LeadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Lead $lead)
+    public function destroy(Lead $lead): JsonResponse
     {
         $result = ['status' => 204];
 

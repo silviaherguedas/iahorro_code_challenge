@@ -52,6 +52,7 @@ Public url: <http://localhost:86/>
 
 ```bash
 ./vendor/bin/sail test
+./vendor/bin/sail test  --testdox
 ```
 
 ## About Laravel
