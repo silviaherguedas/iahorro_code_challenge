@@ -25,10 +25,12 @@ class LeadFactory extends Factory
             'client_id' => Client::factory(),
             'score' => function (array $attributes) {
                 $phone = Client::find($attributes['client_id'])->phone;
-                $min = LeadScoringService::getMin($phone);
-                $max = LeadScoringService::getMax($phone);
 
-                return $this->faker->randomFloat(LeadScoringService::ROUND, $min, $max);
+                return $this->faker->randomFloat(
+                    LeadScoringService::ROUND,
+                    LeadScoringService::getMin($phone),
+                    LeadScoringService::getMax($phone)
+                );
             },
         ];
     }

@@ -31,12 +31,12 @@ class LeadScoringService
         return $this->float_rand($min, $max, self::ROUND);
     }
 
-    public static function getMin($phone)
+    public static function getMin(string $phone)
     {
         return ($phone === null) ? 0 : 50;
     }
 
-    public static function getMax($phone)
+    public static function getMax(string $phone)
     {
         return ($phone === null) ? 49.99 : 99.99;
     }
