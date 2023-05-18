@@ -19,12 +19,15 @@ class ClientFactory extends Factory
      */
     public function definition(): array
     {
-        $randPhone = (bool) mt_rand(0, 1) ? $this->faker->phoneNumber() : null;
-
         return [
             'name' => $this->faker->firstName,
             'email' => $this->faker->unique()->safeEmail,
-            'phone' => $randPhone,
+            'phone' => $this->getRandPhone(),
         ];
+    }
+
+    private function getRandPhone()
+    {
+        return (bool) mt_rand(0, 1) ? $this->faker->phoneNumber() : null;
     }
 }
