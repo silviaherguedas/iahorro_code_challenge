@@ -28,7 +28,7 @@ class LeadFactory extends Factory
                 $min = LeadScoringService::getMin($phone);
                 $max = LeadScoringService::getMax($phone);
 
-                return $this->faker->randomFloat(2, $min, $max);
+                return $this->faker->randomFloat(LeadScoringService::ROUND, $min, $max);
             },
         ];
     }
