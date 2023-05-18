@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Client;
 use App\Models\Lead;
+use App\Services\LeadScoringService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,8 +25,8 @@ class LeadFactory extends Factory
             'client_id' => Client::factory(),
             'score' => function (array $attributes) {
                 $phone = Client::find($attributes['client_id'])->phone;
-                $min = ($phone === null) ? 0 : 50;
-                $max = ($phone === null) ? 49.99 : 99.99;
+                $min = LeadScoringService::getMin($phone);
+                $max = LeadScoringService::getMax($phone);
 
                 return $this->faker->randomFloat(2, $min, $max);
             },

@@ -25,10 +25,20 @@ class LeadScoringService
      */
     public function getLeadScore(Client $client)
     {
-        $min = ($client->phone === null) ? 0 : 50;
-        $max = ($client->phone === null) ? 49.99 : 99.99;
+        $min = self::getMin($client->phone);
+        $max = self::getMax($client->phone);
 
         return $this->float_rand($min, $max, self::ROUND);
+    }
+
+    static public function getMin($phone)
+    {
+        return ($phone === null) ? 0 : 50;
+    }
+
+    static public function getMax($phone)
+    {
+        return ($phone === null) ? 49.99 : 99.99;
     }
 
     /**
