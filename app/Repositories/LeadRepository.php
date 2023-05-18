@@ -15,17 +15,19 @@ class LeadRepository
      */
     public function getAll(): Collection
     {
-        return $this->lead->get();
+        return $this->lead
+            ->with('client')
+            ->get();
     }
 
     /**
      * Get resource by Id
      */
-    public function getById(Lead $lead): Lead
+    public function getById(int $id): Lead
     {
         return $this->lead
-            ->where('id', $lead->id)
-            ->first();
+            ->with('client')
+            ->find($id);
     }
 
     /**
@@ -55,9 +57,9 @@ class LeadRepository
     /**
      * Delete resource
      */
-    public function delete(Lead $data)
+    public function deleteById(int $id)
     {
-        $lead = $this->lead->find($data->id);
+        $lead = $this->lead->find($id);
         $lead->delete();
 
         return $lead;

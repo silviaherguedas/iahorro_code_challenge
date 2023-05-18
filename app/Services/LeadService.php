@@ -15,7 +15,6 @@ class LeadService
 {
     public function __construct(
         protected LeadRepository $leadRepository
-        // protected LeadScoringService $leadScoringService
     ) {}
 
     /**
@@ -29,9 +28,9 @@ class LeadService
     /**
      * Get resource by Id
      */
-    public function getById(Lead $lead): Lead
+    public function getById(int $id): Lead
     {
-        return $this->leadRepository->getById($lead);
+        return $this->leadRepository->getById($id);
     }
 
     /**
@@ -61,10 +60,7 @@ class LeadService
         try {
             $lead = $this->leadRepository->update($validator, $id);
         } catch (Exception $e) {
-            DB::rollBack();
-            Log::info($e->getMessage());
-
-            throw new InvalidArgumentException('Unable to update data');
+            $this->rollBack($e->getMessage(), 'Unable to update data: ');
         }
 
         DB::commit();
@@ -75,21 +71,26 @@ class LeadService
     /**
      * Delete resource
      */
-    public function delete(Lead $lead)
+    public function deleteById(int $id)
     {
         DB::beginTransaction();
 
         try {
-            $lead = $this->leadRepository->delete($lead);
+            $lead = $this->leadRepository->deleteById($id);
         } catch (Exception $e) {
-            DB::rollBack();
-            Log::info($e->getMessage());
-
-            throw new InvalidArgumentException('Unable to delete data');
+            $this->rollBack($e->getMessage(), 'Unable to delete data: ');
         }
 
         DB::commit();
 
         return $lead;
+    }
+
+    private function rollBack(string $logMessage, string $message = '')
+    {
+        DB::rollBack();
+        Log::info($logMessage);
+
+        throw new InvalidArgumentException($message.$logMessage);
     }
 }

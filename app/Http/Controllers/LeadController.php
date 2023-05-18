@@ -12,6 +12,8 @@ use Illuminate\Http\JsonResponse;
 
 class LeadController extends Controller
 {
+    const RESPONSE_OK = 200;
+
     /**
      * @var array
      */
@@ -27,12 +29,12 @@ class LeadController extends Controller
      */
     public function index(): JsonResponse
     {
-        $result = ['status' => 200];
+        $result = ['status' => self::RESPONSE_OK];
 
         try {
             $result['data'] = $this->leadService->getAll();
         } catch (Exception $e) {
-            $result = $this->response_status422($e->getMessage());
+            $result = $this->errorResponse($e->getMessage());
         }
 
         return response()->json($result, $result['status']);
@@ -59,7 +61,7 @@ class LeadController extends Controller
 
             $result['data'] = ['client' => $client, 'lead' => $lead];
         } catch (Exception $e) {
-            $result = $this->response_status422($e->getMessage());
+            $result = $this->errorResponse($e->getMessage());
         }
 
         return response()->json($result, $result['status']);
@@ -70,12 +72,12 @@ class LeadController extends Controller
      */
     public function show(Lead $lead): JsonResponse
     {
-        $result = ['status' => 200];
+        $result = ['status' => self::RESPONSE_OK];
 
         try {
-            $result['data'] = $this->leadService->getById($lead);
+            $result['data'] = $this->leadService->getById($lead->id);
         } catch (Exception $e) {
-            $result = $this->response_status422($e->getMessage());
+            $result = $this->errorResponse($e->getMessage());
         }
 
         return response()->json($result, $result['status']);
@@ -94,7 +96,7 @@ class LeadController extends Controller
      */
     public function update(LeadPutRequest $request, Lead $lead): JsonResponse
     {
-        $result = ['status' => 200];
+        $result = ['status' => self::RESPONSE_OK];
         $validated_client = $request->safe()->only(['name', 'email', 'phone']);
         $validated_lead = array_merge($request->safe()->only(['score']), ['client_id' => $lead->client_id]);
 
@@ -104,7 +106,7 @@ class LeadController extends Controller
 
             $result['data'] = ['client' => $client, 'lead' => $lead];
         } catch (Exception $e) {
-            $result = $this->response_status422($e->getMessage());
+            $result = $this->errorResponse($e->getMessage());
         }
 
         return response()->json($result, $result['status']);
@@ -118,14 +120,14 @@ class LeadController extends Controller
         $result = ['status' => 204];
 
         try {
-            $result['data'] = $this->leadService->delete($lead);
+            $result['data'] = $this->leadService->deleteById($lead->id);
         } catch (Exception $e) {
-            $result = $this->response_status422($e->getMessage());
+            $result = $this->errorResponse($e->getMessage());
         }
         return response()->json($result, $result['status']);
     }
 
-    private function response_status422(string $message): array
+    private function errorResponse(string $message): array
     {
         return ['status' => 422, 'error' => $message];
     }

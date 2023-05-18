@@ -20,6 +20,13 @@ class Lead extends Model
     ];
 
     /**
+     * The attributes that should be visible in arrays.
+     *
+     * @var array
+     */
+    protected $visible = ['id', 'client', 'score'];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
