@@ -118,4 +118,18 @@ class LeadControllerTest extends TestCase
             $newLead->toArray()
         );
     }
+
+    public function test_can_delete_a_lead()
+    {
+        $existingLead = Lead::factory()->create();
+
+        $this->deleteJson(
+            route($this->routePrefix . 'destroy', $existingLead)
+        )->assertNoContent();
+
+        $this->assertDatabaseMissing(
+            'leads',
+            $existingLead->toArray()
+        );
+    }
 }
