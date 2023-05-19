@@ -6,7 +6,7 @@ class LeadPutRequest extends BaseFormRequest
 {
     public function __construct(
         protected LeadRequest $leadRequest,
-        protected ClientRequest $clientRequest
+        protected LeadAndClientRequest $clientRequest
     ) {}
 
     /**

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Http\Request;
 
-class ClientRequest extends BaseFormRequest
+class LeadAndClientRequest extends BaseFormRequest
 {
     protected $client_id;
 
@@ -30,7 +30,7 @@ class ClientRequest extends BaseFormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:clients,email,'.$this->client_id,
+            'email' => 'required|email|max:255|unique:clients,email,' . $this->client_id,
             'phone' => 'nullable|string|max:20|phone:ES',
         ];
     }
