@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Client;
 use App\Models\Lead;
-use App\Repositories\RepositoryInterface;
+use App\Repositories\EloquentLeadRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +13,7 @@ use InvalidArgumentException;
 
 class LeadService
 {
-    public function __construct(protected RepositoryInterface $leadRepository) {}
+    public function __construct(protected EloquentLeadRepository $leadRepository) {}
 
     /**
      * Get all resources
