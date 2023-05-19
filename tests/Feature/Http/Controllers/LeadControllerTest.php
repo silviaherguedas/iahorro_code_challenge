@@ -22,7 +22,6 @@ class LeadControllerTest extends TestCase
         $client = $leads->client()->get()->toArray()[0];
 
         $response = $this->getJson(route($this->routePrefix . 'index'));
-        // dd($leads->toArray(), $client, $response->getContent());
 
         $response
             ->assertOk()
@@ -31,14 +30,8 @@ class LeadControllerTest extends TestCase
                 'data' => [
                     [
                         'id' => $leads->id,
-                        'score' => $leads->score,
+                        'score' => round($leads->score, 2),
                         'client' => $client
-                        // [
-                        //     'id' => $client['id'],
-                        //     'name' => $client['name'],
-                        //     'email' => $client['email'],
-                        //     'phone' => $client['phone']
-                        // ]
                     ]
                 ]
             ]);
@@ -59,11 +52,70 @@ class LeadControllerTest extends TestCase
                 'status' => 200,
                 'data' => [
                     'id' => $lead->id,
-                    'score' => $lead->score,
+                    'score' => round($lead->score, 2),
                     'client' => $client
                 ]
             ]);
     }
 
 
+    public function test_can_store_a_lead()
+    {
+        $client = Client::factory()->make();
+
+        $response = $this->postJson(
+            route($this->routePrefix . 'store'),
+            $client->toArray()
+        );
+
+        $response
+            ->assertCreated()
+            ->assertJsonCount(2);
+
+        $this->assertDatabaseHas(
+            'clients',
+            $client->toArray()
+        );
+    }
+
+    public function test_can_update_a_lead()
+    {
+        $client = Client::factory()->create();
+
+        /* Current record */
+        $existingLead = Lead::factory()
+            ->for($client)
+            ->create();
+
+        /* new record */
+        $newLead = Lead::factory()
+            ->for($client)
+            ->make();
+
+        $newData = [
+            'name' => $client->name,
+            'email' => $client->email,
+            'phone' => $client->phone,
+            'score' => $newLead->score,
+        ];
+
+        $response = $this->putJson(
+            route($this->routePrefix . 'update', $existingLead->id),
+            $newData
+        );
+
+        $response
+            ->assertOk()
+            ->assertJson([
+            'data' => [
+                'id' => $existingLead->id,
+                'score' => $newData['score']
+            ]
+        ]);
+
+        $this->assertDatabaseHas(
+            'leads',
+            $newLead->toArray()
+        );
+    }
 }
