@@ -10,7 +10,7 @@
 
 For the test I created a project containing Laravel 10.
 
-I have used Laravel Sail to set up an environment via docker. It will run PHP 8.2 and MySQL 8.0.
+I have used Laravel Sail to set up an environment via docker. It will run `PHP 8.2` and `MySQL 8.0`.
 
 ## Set Environment
 
