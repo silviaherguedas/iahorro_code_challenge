@@ -54,17 +54,17 @@
 					"formdata": [
 						{
 							"key": "name",
-							"value": "silvia",
+							"value": "Silvia",
 							"type": "text"
 						},
 						{
 							"key": "email",
-							"value": "she25684d@example.net",
+							"value": "she2568@example.net",
 							"type": "text"
 						},
 						{
 							"key": "phone",
-							"value": "",
+							"value": "983000000",
 							"type": "text"
 						}
 					]
@@ -84,12 +84,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}/47",
+					"raw": "{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}/6",
 					"host": [
 						"{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}"
 					],
 					"path": [
-						"47"
+						"6"
 					]
 				}
 			},
@@ -117,19 +117,13 @@
 			"name": "EndPoint Lead - update",
 			"request": {
 				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "probando probando probando nombre",
+							"value": "Cambiando el nombre a otro nombre",
 							"type": "text"
 						},
 						{
@@ -139,23 +133,23 @@
 						},
 						{
 							"key": "phone",
-							"value": "983666666",
+							"value": "983 00(00 07",
 							"type": "text"
 						},
 						{
 							"key": "score",
-							"value": "59.02",
+							"value": "95.30",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}/120",
+					"raw": "{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}/6",
 					"host": [
 						"{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}"
 					],
 					"path": [
-						"120"
+						"6"
 					]
 				}
 			},
@@ -167,12 +161,12 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}/3",
+					"raw": "{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}/8",
 					"host": [
 						"{{HOST}}{{PATH_API}}{{ENTITY_LEAD}}"
 					],
 					"path": [
-						"3"
+						"8"
 					]
 				}
 			},
