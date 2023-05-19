@@ -46,10 +46,10 @@ class LeadRequestTest extends TestCase
         $this->update_validation($validatedField, $brokenRule, $labelError);
     }
 
-    public function test_score_value_string_does_not_pass_validation(): void
+    public function test_score_not_numeric_does_not_pass_validation(): void
     {
         $validatedField = 'score';
-        $brokenRule = 'value not numeric';
+        $brokenRule = $this->faker->word();
         $labelErrors = [
             str_replace(':attribute', $validatedField, Lang::get('validation.regex')),
             str_replace(':attribute', $validatedField, Lang::get('validation.numeric'))
