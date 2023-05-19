@@ -73,3 +73,32 @@ To get the container up we can launch the following command:
 ./vendor/bin/sail test
 ./vendor/bin/sail test  --testdox
 ```
+
+## Configuration in Postman
+
+I have created a collection with the requests to be able to test the API.
+It can be imported and used directly.
+
+[Download: ./storage/postman/iAhorro_codeChallenge.postman_collection.json](./storage/postman/iAhorro_codeChallenge.postman_collection.json)
+
+This configuration has created as variables what is necessary to mount the URL in each of the EndPoints. So you should check if you have changed the port that was preconfigured in the environment file.
+
+```json
+"variable": [
+  {
+   "key": "HOST",
+   "value": "http://localhost:86/",
+   "type": "string"
+  },
+  {
+   "key": "PATH_API",
+   "value": "api/",
+   "type": "string"
+  },
+  {
+   "key": "ENTITY_LEAD",
+   "value": "leads",
+   "type": "string"
+  }
+ ]
+```
