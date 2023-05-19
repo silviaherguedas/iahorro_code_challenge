@@ -32,10 +32,10 @@ DB_PORT=3308
 
 Note: Don't forget to set your db settings and ports if they are not correct.
 
-## Set the application key
+## Install dependencies
 
 ```bash
-php artisan key:generate
+composer install
 ```
 
 ## Docker containers
@@ -48,12 +48,16 @@ To get the container up we can launch the following command:
 ./vendor/bin/sail up
 ```
 
-Public url: <http://localhost:86/>
-
 ### Stop
 
 ```bash
 ./vendor/bin/sail stop
+```
+
+## Set the application key
+
+```bash
+./vendor/bin/sail artisan key:generate
 ```
 
 ## Migration and seed
