@@ -20,7 +20,7 @@ class LeadAndClientRequestTest extends TestCase
     {
         $validatedField = 'name';
         $brokenRule = null;
-        $labelError = $this->getLabelErrorRequired($validatedField);
+        $labelError = Lang::get('validation.required', ['attribute' => $validatedField]);
 
         // Store validation
         $this->store_validation($validatedField, $brokenRule, $labelError);
@@ -33,7 +33,7 @@ class LeadAndClientRequestTest extends TestCase
     {
         $validatedField = 'name';
         $brokenRule = $this->faker->text(5000);
-        $labelError = str_replace([':attribute', ':max'], [$validatedField, 255], Lang::get('validation.max.string'));;
+        $labelError = Lang::get('validation.max.string', ['attribute' => $validatedField, 'max' => 255]);
 
         // Store validation
         $this->store_validation($validatedField, $brokenRule, $labelError);
@@ -46,7 +46,7 @@ class LeadAndClientRequestTest extends TestCase
     {
         $validatedField = 'email';
         $brokenRule = null;
-        $labelError = $this->getLabelErrorRequired($validatedField);
+        $labelError = Lang::get('validation.required', ['attribute' => $validatedField]);
 
         // Store validation
         $this->store_validation($validatedField, $brokenRule, $labelError);
@@ -59,7 +59,7 @@ class LeadAndClientRequestTest extends TestCase
     {
         $validatedField = 'email';
         $brokenRule = $this->faker->word();
-        $labelError = str_replace(':attribute', $validatedField, Lang::get('validation.email'));
+        $labelError = Lang::get('validation.email', ['attribute' => $validatedField]);
 
         // Store validation
         $this->store_validation($validatedField, $brokenRule, $labelError);
@@ -71,7 +71,7 @@ class LeadAndClientRequestTest extends TestCase
     public function test_repeated_email_does_not_pass_validation(): void
     {
         $validatedField = 'email';
-        $labelError = str_replace(':attribute', $validatedField, Lang::get('validation.unique'));
+        $labelError = Lang::get('validation.unique', ['attribute' => $validatedField]);
 
         $existing = Client::factory()->create();
         $this->store_validation($validatedField, $existing->email, $labelError);
@@ -83,7 +83,7 @@ class LeadAndClientRequestTest extends TestCase
         $phone = new PhoneNumber('+3212/34.56.738', 'ES');
         $phone->formatE164();
         $brokenRule = (string) $phone;
-        $labelError = $this->getLabelErrorPhone($validatedField);
+        $labelError = Lang::get('validation.phone', ['attribute' => $validatedField]);
 
         // Store validation
         $this->store_validation($validatedField, $brokenRule, $labelError);
@@ -96,7 +96,7 @@ class LeadAndClientRequestTest extends TestCase
     {
         $validatedField = 'phone';
         $brokenRule = $this->faker->text(21);
-        $labelError = $this->getLabelErrorPhone($validatedField);
+        $labelError = Lang::get('validation.phone', ['attribute' => $validatedField]);
 
         $client = Client::factory()->make();
         $client = $client->toArray();
@@ -149,15 +149,5 @@ class LeadAndClientRequestTest extends TestCase
                 $newData
             )->assertUnprocessable()
             ->assertJsonFragment([$validatedField => $labelErrors]);
-    }
-
-    private function getLabelErrorRequired(String $validatedField): String
-    {
-        return str_replace(':attribute', $validatedField, Lang::get('validation.required'));
-    }
-
-    private function getLabelErrorPhone(String $validatedField): String
-    {
-        return str_replace(':attribute', $validatedField, Lang::get('validation.phone'));
     }
 }

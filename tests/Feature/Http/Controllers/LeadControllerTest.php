@@ -26,7 +26,8 @@ class LeadControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJson([
-                'status' => 200,
+                'success' => true,
+                'message' => 'Lead List',
                 'data' => [
                     [
                         'id' => $leads->id,
@@ -49,7 +50,8 @@ class LeadControllerTest extends TestCase
         $response
             ->assertOk()
             ->assertJson([
-                'status' => 200,
+                'success' => true,
+                'message' => 'Lead Show',
                 'data' => [
                     'id' => $lead->id,
                     'score' => round($lead->score, 2),
@@ -70,7 +72,7 @@ class LeadControllerTest extends TestCase
 
         $response
             ->assertCreated()
-            ->assertJsonCount(2);
+            ->assertJsonCount(3);
 
         $this->assertDatabaseHas(
             'clients',

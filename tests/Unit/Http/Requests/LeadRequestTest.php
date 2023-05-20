@@ -19,7 +19,7 @@ class LeadRequestTest extends TestCase
     {
         $validatedField = 'score';
         $brokenRule = null;
-        $labelError = str_replace(':attribute', $validatedField, Lang::get('validation.required'));
+        $labelError = Lang::get('validation.required', ['attribute' => $validatedField]);
 
         $this->update_validation($validatedField, $brokenRule, $labelError);
     }
@@ -28,7 +28,7 @@ class LeadRequestTest extends TestCase
     {
         $validatedField = 'score';
         $brokenRule = $this->faker->randomFloat(3, 0, 99.99);
-        $labelError = str_replace(':attribute', $validatedField, Lang::get('validation.regex'));
+        $labelError = Lang::get('validation.regex', ['attribute' => $validatedField]);
 
         $this->update_validation($validatedField, $brokenRule, $labelError);
     }
@@ -37,11 +37,13 @@ class LeadRequestTest extends TestCase
     {
         $validatedField = 'score';
         $brokenRule = $this->faker->randomFloat(2, 99.99, 150);
-        $labelError = str_replace(
-            [':attribute', ':min', ':max'],
-            [$validatedField,'0.00', '99.99'],
-            Lang::get('validation.between.numeric')
-        );
+        $labelError = Lang::get(
+            'validation.between.numeric',
+            [
+                'attribute' => $validatedField,
+                'min' => '0.00',
+                'max' => 99.99,
+            ]);
 
         $this->update_validation($validatedField, $brokenRule, $labelError);
     }
@@ -51,8 +53,8 @@ class LeadRequestTest extends TestCase
         $validatedField = 'score';
         $brokenRule = $this->faker->word();
         $labelErrors = [
-            str_replace(':attribute', $validatedField, Lang::get('validation.regex')),
-            str_replace(':attribute', $validatedField, Lang::get('validation.numeric'))
+            Lang::get('validation.regex', ['attribute' => $validatedField]),
+            Lang::get('validation.numeric', ['attribute' => $validatedField])
         ];
 
         $this->update_validation($validatedField, $brokenRule, $labelErrors);

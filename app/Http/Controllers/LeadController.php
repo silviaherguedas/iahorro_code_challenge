@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ApiException;
 use App\Http\Requests\LeadAndClientRequest;
 use App\Http\Requests\LeadPutRequest;
+use App\Http\Responses\ApiResponse;
 use App\Models\Lead;
 use App\Services\ClientService;
 use App\Services\LeadService;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class LeadController extends Controller
 {
-    const RESPONSE_OK = 200;
-
-    /**
-     * @var array
-     */
-    private $errorNotFound = ['status' => 404, 'error' => 'Resource not found.'];
+    const ERROR_NOT_FOUND = 'Resource not found.';
 
     public function __construct(
         protected LeadService $leadService,
@@ -29,15 +27,12 @@ class LeadController extends Controller
      */
     public function index(): JsonResponse
     {
-        $result = ['status' => self::RESPONSE_OK];
-
         try {
-            $result['data'] = $this->leadService->getAll();
+            $result = $this->leadService->getAll();
+            return (new ApiResponse('Lead List', $result, Response::HTTP_OK, true))->getJsonPayload();
         } catch (Exception $e) {
-            $result = $this->errorResponse($e->getMessage());
+            throw new ApiException($e->getMessage());
         }
-
-        return response()->json($result, $result['status']);
     }
 
     /**
@@ -45,7 +40,7 @@ class LeadController extends Controller
      */
     public function create(): JsonResponse
     {
-        return response()->json($this->errorNotFound, 404);
+        return (new ApiResponse(self::ERROR_NOT_FOUND, null, Response::HTTP_NOT_FOUND, false))->getJsonPayload();
     }
 
     /**
@@ -53,18 +48,15 @@ class LeadController extends Controller
      */
     public function store(LeadAndClientRequest $request): JsonResponse
     {
-        $result = ['status' => 201];
-
         try {
             $client = $this->clientService->create($request->validated());
             $lead = $this->leadService->create($client);
 
-            $result['data'] = array_merge($lead->toArray(), ['client' => $client]);
+            $result = array_merge($lead->toArray(), ['client' => $client]);
+            return (new ApiResponse('Lead stored successfully', $result, Response::HTTP_CREATED, true))->getJsonPayload();
         } catch (Exception $e) {
-            $result = $this->errorResponse($e->getMessage());
+            throw new ApiException($e->getMessage());;
         }
-
-        return response()->json($result, $result['status']);
     }
 
     /**
@@ -72,15 +64,12 @@ class LeadController extends Controller
      */
     public function show(Lead $lead): JsonResponse
     {
-        $result = ['status' => self::RESPONSE_OK];
-
         try {
-            $result['data'] = $this->leadService->getById($lead->id);
+            $result = $this->leadService->getById($lead->id);
+            return (new ApiResponse('Lead Show', $result, Response::HTTP_OK, true))->getJsonPayload();
         } catch (Exception $e) {
-            $result = $this->errorResponse($e->getMessage());
+            throw new ApiException($e->getMessage());;
         }
-
-        return response()->json($result, $result['status']);
     }
 
     /**
@@ -88,7 +77,7 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead): JsonResponse
     {
-        return response()->json($this->errorNotFound, 404);
+        return (new ApiResponse(self::ERROR_NOT_FOUND, null, Response::HTTP_NOT_FOUND, false))->getJsonPayload();
     }
 
     /**
@@ -96,7 +85,6 @@ class LeadController extends Controller
      */
     public function update(LeadPutRequest $request, Lead $lead): JsonResponse
     {
-        $result = ['status' => self::RESPONSE_OK];
         $validated_client = $request->safe()->only(['name', 'email', 'phone']);
         $validated_lead = array_merge($request->safe()->only(['score']), ['client_id' => $lead->client_id]);
 
@@ -104,12 +92,11 @@ class LeadController extends Controller
             $client = $this->clientService->update($validated_client, $lead->client_id);
             $lead = $this->leadService->update($validated_lead, $lead->id);
 
-            $result['data'] = array_merge($lead->toArray(), ['client' => $client]);
+            $result = array_merge($lead->toArray(), ['client' => $client]);
+            return (new ApiResponse('Lead updated successfully', $result, Response::HTTP_OK, true))->getJsonPayload();
         } catch (Exception $e) {
-            $result = $this->errorResponse($e->getMessage());
+            throw new ApiException($e->getMessage());;
         }
-
-        return response()->json($result, $result['status']);
     }
 
     /**
@@ -117,18 +104,11 @@ class LeadController extends Controller
      */
     public function destroy(Lead $lead): JsonResponse
     {
-        $result = ['status' => 204];
-
         try {
-            $result['data'] = $this->leadService->deleteById($lead->id);
+            $result = $this->leadService->deleteById($lead->id);
+            return (new ApiResponse('Lead deleted successfully', $result, Response::HTTP_NO_CONTENT, true))->getJsonPayload();
         } catch (Exception $e) {
-            $result = $this->errorResponse($e->getMessage());
+            throw new ApiException($e->getMessage());;
         }
-        return response()->json($result, $result['status']);
-    }
-
-    private function errorResponse(string $message): array
-    {
-        return ['status' => 422, 'error' => $message];
     }
 }
