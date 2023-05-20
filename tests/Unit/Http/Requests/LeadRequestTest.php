@@ -7,6 +7,7 @@ use App\Models\Lead;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Lang;
+use Propaganistas\LaravelPhone\PhoneNumber;
 use Tests\TestCase;
 
 class LeadRequestTest extends TestCase
@@ -58,6 +59,72 @@ class LeadRequestTest extends TestCase
         ];
 
         $this->update_validation($validatedField, $brokenRule, $labelErrors);
+    }
+
+    public function test_score_between_0_and_50_when_phone_is_not_null_does_not_pass_validation(): void
+    {
+        $validatedField = 'score';
+        $brokenRule = $this->faker->numberBetween(0, 49.99);
+        $labelError = Lang::get(
+            'validation.between.numeric',
+            [
+                'attribute' => $validatedField,
+                'min' => '50.00',
+                'max' => 99.99,
+            ]
+        );
+
+        $phone = new PhoneNumber('+34983000000', 'ES');
+        $phone->formatE164();
+        $phone = (string) $phone;
+
+        $clientData = [
+            'phone' => $phone,
+            'email' => $this->faker->email(),
+            'name' => $this->faker->name(),
+        ];
+        $client = Client::factory()->create($clientData);
+        $clientData = $client->toArray();
+        $existing = Lead::factory()->for($client)->create();
+        $new = array_merge ($clientData, [$validatedField => $brokenRule]);
+
+        $this
+            ->putJson(
+                route($this->routePrefix . 'update', $existing),
+                $new
+            )->assertUnprocessable()
+            ->assertJsonFragment([$validatedField => [$labelError]]);
+    }
+
+    public function test_score_between_50_and_100_when_phone_is_null_does_not_pass_validation(): void
+    {
+        $validatedField = 'score';
+        $brokenRule = $this->faker->numberBetween(50.00, 99.99);
+        $labelError = Lang::get(
+            'validation.between.numeric',
+            [
+                'attribute' => $validatedField,
+                'min' => '0.00',
+                'max' => 49.99,
+            ]
+        );
+
+        $clientData = [
+            'phone' => null,
+            'email' => $this->faker->email(),
+            'name' => $this->faker->name(),
+        ];
+        $client = Client::factory()->create($clientData);
+        $clientData = $client->toArray();
+        $existing = Lead::factory()->for($client)->create();
+        $new = array_merge($clientData, [$validatedField => $brokenRule]);
+
+        $this
+            ->putJson(
+                route($this->routePrefix . 'update', $existing),
+                $new
+            )->assertUnprocessable()
+            ->assertJsonFragment([$validatedField => [$labelError]]);
     }
 
     private function update_validation(String $validatedField, String | null $brokenRule, String | array $labelErrors)

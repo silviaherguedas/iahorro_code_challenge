@@ -26,7 +26,7 @@ class ClientService
      * Update data
      * Store to DB if there are no errors.
      */
-    public function update(array $validator, int $id)
+    public function update(array $validator, int $id): Client
     {
         DB::beginTransaction();
 

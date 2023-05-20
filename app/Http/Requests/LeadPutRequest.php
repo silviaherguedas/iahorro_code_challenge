@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+
 class LeadPutRequest extends BaseFormRequest
 {
     public function __construct(
@@ -15,6 +17,17 @@ class LeadPutRequest extends BaseFormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->sometimes('score', 'between:0.00,49.99', function ($input) {
+            return $input->phone == null;
+        });
+
+        $validator->sometimes('score', 'between:50.00,99.99', function ($input) {
+            return $input->phone != null;
+        });
     }
 
     /**
