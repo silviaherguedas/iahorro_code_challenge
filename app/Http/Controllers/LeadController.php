@@ -55,7 +55,7 @@ class LeadController extends Controller
             $result = array_merge($lead->toArray(), ['client' => $client]);
             return (new ApiResponse('Lead stored successfully', $result, Response::HTTP_CREATED, true))->getJsonPayload();
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());;
+            throw new ApiException($e->getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ class LeadController extends Controller
             $result = $this->leadService->getById($lead->id);
             return (new ApiResponse('Lead Show', $result, Response::HTTP_OK, true))->getJsonPayload();
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());;
+            throw new ApiException($e->getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ class LeadController extends Controller
             $result = array_merge($lead->toArray(), ['client' => $client]);
             return (new ApiResponse('Lead updated successfully', $result, Response::HTTP_OK, true))->getJsonPayload();
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());;
+            throw new ApiException($e->getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ class LeadController extends Controller
             $result = $this->leadService->deleteById($lead->id);
             return (new ApiResponse('Lead deleted successfully', $result, Response::HTTP_NO_CONTENT, true))->getJsonPayload();
         } catch (Exception $e) {
-            throw new ApiException($e->getMessage());;
+            throw new ApiException($e->getMessage());
         }
     }
 }
